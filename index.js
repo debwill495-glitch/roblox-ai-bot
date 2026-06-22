@@ -6,10 +6,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// OpenAI setup
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
+// AI route
 app.post("/chat", async (req, res) => {
   try {
     const message = req.body.message;
@@ -17,7 +19,7 @@ app.post("/chat", async (req, res) => {
     const response = await client.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "You are a friendly Roblox NPC chatbot." },
+        { role: "system", content: "You are a friendly Roblox NPC chatbot. Keep replies short and natural." },
         { role: "user", content: message }
       ]
     });
@@ -27,10 +29,14 @@ app.post("/chat", async (req, res) => {
     });
 
   } catch (e) {
+    console.log(e);
     res.json({ reply: "AI error." });
   }
 });
 
-app.listen(3000, () => {
-  console.log("AI server running");
+// ✅ FIXED PORT (RENDER REQUIRED)
+const PORT = process.env.PORT;
+
+app.listen(PORT, () => {
+  console.log("AI server running on port", PORT);
 });
